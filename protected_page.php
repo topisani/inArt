@@ -1,8 +1,7 @@
 <?php
 include_once 'includes/db_connect.php';
-
-set_page_title ( 'Protected Page' );
-ia_header ();
+include_once 'includes/functions.php';
+ia_header ('Protected Page');
 
 if (login_check ( $mysqli ) == true) : ?>
 
@@ -21,6 +20,10 @@ if (login_check ( $mysqli ) == true) : ?>
 		<span class="error">You are not authorized to access this page.</span>
 		Please <a href="login.php">login</a>.
 	</p>
-
+	<?php 
+	echo '<p>user id'		.$_SESSION['user_id'].'</p>';
+	echo '<p>username'		.$_SESSION['username'].'</p>';
+	echo '<p>login string'	.$_SESSION['login_string'].'</p>';
+	?>
 <?php endif; ?>
 <?php ia_footer()?>

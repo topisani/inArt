@@ -1,4 +1,5 @@
 <?php
+include_once 'includes/functions.php';
 set_page_title ( 'Registration Success!' );
 ia_header ();
 ?>

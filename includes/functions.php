@@ -28,8 +28,11 @@ function sec_session_start() {
  * Echoes the content of the header file '/header.php'.
  * 
  * To be placed at the top of every page.
+ * 
  */
-function ia_header() {
+function ia_header($title = '') {
+	sec_session_start();
+	set_page_title($title);
 	return include('header.php');
 }
 /**
@@ -97,7 +100,13 @@ function ia_scripts() {
 #####################################################
 # LOGIN & REGISTER STUFF
 #####################################################
-
+/**
+ * 
+ * @param unknown $email
+ * @param unknown $password
+ * @param unknown $mysqli
+ * @return string
+ */
 function login($email, $password, $mysqli) {
 	// Using prepared statements means that SQL injection is not possible.
 	if ($stmt = $mysqli->prepare("SELECT id, username, password, salt
@@ -121,7 +130,7 @@ function login($email, $password, $mysqli) {
         	if (checkbrute($user_id, $mysqli) == true) {
         		// Account is locked
         		// Send an email to user saying their account is locked
-        		return false;
+        		return '3';
         	} else {
         		// Check if the password in the database matches
         		// the password the user submitted.
@@ -147,13 +156,15 @@ function login($email, $password, $mysqli) {
         			$now = time();
         			$mysqli->query("INSERT INTO login_attempts(user_id, time)
         					VALUES ('$user_id', '$now')");
-        			return false;
+        			return '1';
         		}
         	}
         } else {
         	// No user exists.
-        	return false;
+        	return '2';
         }
+	} else {
+		header('Location: ../error.php?err=Could not connect to database');
 	}
 }
 
@@ -185,9 +196,9 @@ function checkbrute($user_id, $mysqli) {
 
 function login_check($mysqli) {
 	// Check if all session variables are set
-	if (isset($_SESSION['user_id'],
-			$_SESSION['username'],
-			$_SESSION['login_string'])) {
+	if (isset(	$_SESSION['user_id'],
+				$_SESSION['username'],
+				$_SESSION['login_string'])) {
 
 				$user_id = $_SESSION['user_id'];
 				$login_string = $_SESSION['login_string'];

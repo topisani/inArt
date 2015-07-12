@@ -7,8 +7,7 @@
  */
 
 include_once 'includes/functions.php';
-//TODO is this necessary?
-sec_session_start();
+
 ?>
 <!DOCTYPE html>
 <html>
