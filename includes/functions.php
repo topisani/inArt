@@ -24,6 +24,80 @@ function sec_session_start() {
     session_regenerate_id(true);    // regenerated the session, delete the old one. 
 }
 
+/** 
+ * Echoes the content of the header file '/header.php'.
+ * 
+ * To be placed at the top of every page.
+ */
+function ia_header() {
+	return include('header.php');
+}
+/**
+ * Echoes the content of the footer file '/footer.php'.
+ *
+ * To be placed at the bottom of every page.
+ */
+function ia_footer() {
+	return include('footer.php');
+}
+
+/**
+ * Set title of current page
+ * 
+ * @param string $title
+ * title
+ */
+function set_page_title($title) {
+	$_SESSION['page-title'] = $title;
+}
+/**
+ * Get title of the current page
+ * 
+ * @return page title
+ */
+function get_page_title() {
+	return $_SESSION['page-title'];
+}
+
+
+####################################################
+# Scripts & styles
+####################################################
+
+/**
+ * Echoes all stylesheets formated as html.
+ */
+function ia_styles() {
+	$styles = [
+			'main'
+	];
+	foreach($styles as $style){
+		echo '<link rel="stylesheet" href="css/'.$style.'.css" />';
+	}
+}
+
+/**
+ * Echoes all javasrcipt formated as html.
+ */
+function ia_scripts() {
+	$scripts = [
+			'main',
+			'forms',
+			'sha512'
+	];
+	foreach($scripts as $script){
+		echo '<script type="text/JavaScript" src="js/'.$script.'.js"></script>';
+	}
+}
+
+
+
+
+
+#####################################################
+# LOGIN & REGISTER STUFF
+#####################################################
+
 function login($email, $password, $mysqli) {
 	// Using prepared statements means that SQL injection is not possible.
 	if ($stmt = $mysqli->prepare("SELECT id, username, password, salt

@@ -48,11 +48,13 @@ include_once 'includes/functions.php';
                                      id="confirmpwd" /><br>
             <input type="button" 
                    value="Register" 
-                   onclick="return regformhash(this.form,
+                   onclick="return registerformhash(
+                       			   this.form,
                                    this.form.username,
                                    this.form.email,
                                    this.form.password,
-                                   this.form.confirmpwd);" /> 
+                                   this.form.confirmpwd
+                                   );" /> 
         </form>
         <p>Return to the <a href="login.php">login page</a>.</p>
     </body>

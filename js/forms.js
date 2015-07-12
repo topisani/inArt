@@ -1,4 +1,4 @@
-function formhash(form, password) {
+function loginformhash(form, password) {
     // Create a new element input, this will be our hashed password field. 
     var p = document.createElement("input");
  
@@ -15,7 +15,7 @@ function formhash(form, password) {
     form.submit();
 }
  
-function regformhash(form, uid, email, password, conf) {
+function registerformhash(form, uid, email, password, conf) {
      // Check each field has a value
     if (uid.value == ''         || 
           email.value == ''     || 
