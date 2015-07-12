@@ -15,7 +15,7 @@ if (isset ( $_GET ['error'] )) {
 			echo 'Account locked';
 			break;
 		case 4:
-			header('Location: error.php?err=Could not connect to database');
+			error_page('Could not connect to database');
 			break;
 		default:
 			echo 'Unknown Error';

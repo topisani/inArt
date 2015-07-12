@@ -16,7 +16,7 @@ function sec_session_start() {
     $httponly = true;
     // Forces sessions to only use cookies.
     if (ini_set('session.use_only_cookies', 1) === FALSE) {
-        header("Location: ../error.php?err=Could not initiate a safe session (ini_set)");
+        error_page("Could not initiate a safe session (ini_set)");
         exit();
     }
     // Gets current cookies params.
@@ -32,6 +32,13 @@ function sec_session_start() {
     session_regenerate_id(true);    // regenerated the session, delete the old one. 
 }
 
+/**
+ * Redirects to an error page with given message
+ * @param string $message the error message to display
+ */
+function error_page(string $message) {
+	header('Location: ../error.php?err='.$message);
+}
 /** 
  * Echoes the content of the header file '/header.php'.
  * 
@@ -104,7 +111,46 @@ function ia_scripts() {
 
 
 
+#####################################################
+# USER TOOLS
+#####################################################
+/**
+ * Get username from id
+ * @param int $userid user id
+ * @return string|NULL|FALSE username, null on database error, false on unexisting id
+ */
+function get_username(int $userid) {
+	if ($stmt = $mysqli->prepare('SELECT username FROM members WHERE id = ? LIMIT 1')) {
+		$stmt->bind_param('i', $userid);  
+		$stmt->execute();    
+		$stmt->store_result();
 
+		$stmt->bind_result($username);
+		$stmt->fetch();
+		if ($stmt->num_rows == 1) return (string) $username;
+		return false;
+	} 
+	return null;
+}
+
+/**
+ * Get user id from name
+ * @param string $username username
+ * @return int|NULL|FALSE user id, null on database error, false on invalid username
+ */
+function get_userid($username) {
+	if ($stmt = $mysqli->prepare('SELECT id FROM members WHERE username = ? LIMIT 1')) {
+		$stmt->bind_param('s', $username);  
+		$stmt->execute();    
+		$stmt->store_result();
+			
+		$stmt->bind_result($userid);
+		$stmt->fetch();
+		if ($stmt->num_rows == 1) return (int) $userid;
+		return false;
+	}
+	return null;
+}
 
 #####################################################
 # LOGIN & REGISTER
@@ -120,20 +166,22 @@ function ia_scripts() {
  * 	<li> 1:    incorrect password</li>
  * 	<li> 2:    user does not exist</li>
  * 	<li> 3:    user locked</li>
+ *  <li> 4:    database error</li>
  */
 function login($login, $password) {
 	global $mysqli;
-	if (strpos($username, '@') !== false ) {
+	if (strpos($login, '@') !== false ) {
 		// Using prepared statements means that SQL injection is not possible.
 		if ($stmt = $mysqli->prepare('SELECT id, username, password, salt FROM members WHERE email = ? LIMIT 1')) {
 			$stmt->bind_param('s', $login);  // Bind "$login" to parameter.
 			$stmt->execute();    // Execute the prepared query.
 			$stmt->store_result();
-		
+			
 			// get variables from result.
 			$stmt->bind_result($user_id, $username, $db_password, $salt);
 			$stmt->fetch();
-		}
+			$email = $login;
+		} else return '4';
 	} else {
 		// Using prepared statements means that SQL injection is not possible.
 		if ($stmt = $mysqli->prepare('SELECT id, email, password, salt FROM members WHERE username = ? LIMIT 1')) {
@@ -144,7 +192,8 @@ function login($login, $password) {
 			// get variables from result.
 			$stmt->bind_result($user_id, $email, $db_password, $salt);
 			$stmt->fetch();
-		}
+			$username = $login;
+		} else return '4';
 	}
         // hash the password with the unique salt.
         $password = hash('sha512', $password . $salt);

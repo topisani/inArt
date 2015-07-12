@@ -24,10 +24,9 @@ include_once $_SERVER['DOCUMENT_ROOT'].'/includes/functions.php';
 	<div id="header">
 		<form action="includes/process_login.php" method="post"
 			name="login_form">
-			Email: <input type="text" name="email" /> Password: <input
-				type="password" name="password" id="password" /> <input
-				type="button" value="Login"
-				onclick="loginformhash(this.form, this.form.password);" />
+			Username / Email: <input type="text" name="email" />
+			 Password: <input type="password" name="password" id="password" /> 
+				<input type="submit" value="Login" onclick="loginformhash(this.form, this.form.password);" />
 		</form>
 
 		<?php
