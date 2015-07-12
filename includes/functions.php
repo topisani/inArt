@@ -3,6 +3,12 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/config.php');
 
 $mysqli = new mysqli(HOST, USER, PASSWORD, DATABASE);
 
+/**
+ * Starts a secure session. 
+ * Should be run at the top of every page
+ * 
+ * NOTE: not needed if ia_header() is present
+ */
 function sec_session_start() {
     $session_name = 'sec_session_id';   // Set a custom session name
     $secure = SECURE;
@@ -31,6 +37,7 @@ function sec_session_start() {
  * 
  * To be placed at the top of every page.
  * 
+ * @param string $title the title of the current page
  */
 function ia_header($title = '') {
 	sec_session_start();
@@ -104,26 +111,41 @@ function ia_scripts() {
 #####################################################
 /**
  * 
- * @param unknown $email
- * @param unknown $password
- * @param unknown $mysqli
- * @return string
+ * Log in
+ * @param unknown $login  email or username
+ * @param unknown $password  password
+ * @return string|boolean
+ * <ul>
+ * 	<li> true: logged in successfully</li>
+ * 	<li> 1:    incorrect password</li>
+ * 	<li> 2:    user does not exist</li>
+ * 	<li> 3:    user locked</li>
  */
-function login($email, $password) {
+function login($login, $password) {
 	global $mysqli;
-	// Using prepared statements means that SQL injection is not possible.
-	if ($stmt = $mysqli->prepare("SELECT id, username, password, salt
-        FROM members
-       WHERE email = ?
-        LIMIT 1")) {
-        $stmt->bind_param('s', $email);  // Bind "$email" to parameter.
-        $stmt->execute();    // Execute the prepared query.
-        $stmt->store_result();
-
-        // get variables from result.
-        $stmt->bind_result($user_id, $username, $db_password, $salt);
-        $stmt->fetch();
-
+	if (strpos($username, '@') !== false ) {
+		// Using prepared statements means that SQL injection is not possible.
+		if ($stmt = $mysqli->prepare('SELECT id, username, password, salt FROM members WHERE email = ? LIMIT 1')) {
+			$stmt->bind_param('s', $login);  // Bind "$login" to parameter.
+			$stmt->execute();    // Execute the prepared query.
+			$stmt->store_result();
+		
+			// get variables from result.
+			$stmt->bind_result($user_id, $username, $db_password, $salt);
+			$stmt->fetch();
+		}
+	} else {
+		// Using prepared statements means that SQL injection is not possible.
+		if ($stmt = $mysqli->prepare('SELECT id, email, password, salt FROM members WHERE username = ? LIMIT 1')) {
+			$stmt->bind_param('s', $login);  // Bind "$login" to parameter.
+			$stmt->execute();    // Execute the prepared query.
+			$stmt->store_result();
+		
+			// get variables from result.
+			$stmt->bind_result($user_id, $email, $db_password, $salt);
+			$stmt->fetch();
+		}
+	}
         // hash the password with the unique salt.
         $password = hash('sha512', $password . $salt);
         if ($stmt->num_rows == 1) {
@@ -167,9 +189,12 @@ function login($email, $password) {
         	return '2';
         }
 	}
-	return '4';
-}
 
+/**
+ * Check wether a user is locked due to too many wrong attempts
+ * @param integer $user_id the id of the user to check for
+ * @return boolean
+ */
 function checkbrute($user_id) {
 	global $mysqli;
 	// Get timestamp of current time
@@ -196,7 +221,10 @@ function checkbrute($user_id) {
 			}
 	}
 }
-
+/**
+ * Check wether a user is locked in to the current session
+ * @return boolean
+ */
 function login_check() {
 	global $mysqli;
 	// Check if all session variables are set
