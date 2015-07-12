@@ -1,6 +1,8 @@
 <?php
-include_once 'config.php';
- 
+include_once($_SERVER['DOCUMENT_ROOT'].'/config.php');	
+
+$mysqli = new mysqli(HOST, USER, PASSWORD, DATABASE);
+
 function sec_session_start() {
     $session_name = 'sec_session_id';   // Set a custom session name
     $secure = SECURE;
@@ -98,7 +100,7 @@ function ia_scripts() {
 
 
 #####################################################
-# LOGIN & REGISTER STUFF
+# LOGIN & REGISTER
 #####################################################
 /**
  * 
@@ -107,7 +109,8 @@ function ia_scripts() {
  * @param unknown $mysqli
  * @return string
  */
-function login($email, $password, $mysqli) {
+function login($email, $password) {
+	global $mysqli;
 	// Using prepared statements means that SQL injection is not possible.
 	if ($stmt = $mysqli->prepare("SELECT id, username, password, salt
         FROM members
@@ -163,12 +166,12 @@ function login($email, $password, $mysqli) {
         	// No user exists.
         	return '2';
         }
-	} else {
-		header('Location: ../error.php?err=Could not connect to database');
 	}
+	return '4';
 }
 
-function checkbrute($user_id, $mysqli) {
+function checkbrute($user_id) {
+	global $mysqli;
 	// Get timestamp of current time
 	$now = time();
 
@@ -194,7 +197,8 @@ function checkbrute($user_id, $mysqli) {
 	}
 }
 
-function login_check($mysqli) {
+function login_check() {
+	global $mysqli;
 	// Check if all session variables are set
 	if (isset(	$_SESSION['user_id'],
 				$_SESSION['username'],

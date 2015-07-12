@@ -1,6 +1,5 @@
 <?php
-include_once 'includes/db_connect.php';
-include_once 'includes/functions.php';
+include_once $_SERVER['DOCUMENT_ROOT'].'/includes/functions.php';
 ia_header ('Log in');
 
 if (isset ( $_GET ['error'] )) {
@@ -15,11 +14,12 @@ if (isset ( $_GET ['error'] )) {
 		case 3:
 			echo 'Account locked';
 			break;
+		case 4:
+			header('Location: error.php?err=Could not connect to database');
+			break;
 		default:
 			echo 'Unknown Error';
 	}
-	echo '<p>Email: '.$_GET ['email'].'</p>';
-	echo '<p>Password: '.$_GET ['passwd'].'</p>';
 }
 ?>
 
@@ -31,7 +31,7 @@ if (isset ( $_GET ['error'] )) {
 </form>
 
 <?php
-if (login_check ( $mysqli ) == true) {
+if (login_check()) {
 	echo '<p>Currently logged in as ' . htmlentities ( $_SESSION ['username'] ) . '.</p>';
 	
 	echo '<p>Do you want to change user? <a href="includes/logout.php">Log out</a>.</p>';

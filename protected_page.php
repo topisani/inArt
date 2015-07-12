@@ -1,6 +1,5 @@
 <?php
-include_once 'includes/db_connect.php';
-include_once 'includes/functions.php';
+include_once $_SERVER['DOCUMENT_ROOT'].'/includes/functions.php';
 ia_header ('Protected Page');
 
 if (login_check ( $mysqli ) == true) : ?>
@@ -8,9 +7,7 @@ if (login_check ( $mysqli ) == true) : ?>
 	<p>Welcome <?php echo htmlentities($_SESSION['username']); ?>!</p>
 	<p>
 		This is an example protected page. To access this page, users must be
-		logged in. At some stage, we'll also check the role of the user, so
-		pages will be able to determine the type of user authorised to access
-		the page.
+		logged in.
 	</p>
 	<p>
 		Return to <a href="login.php">login page</a>
@@ -20,10 +17,5 @@ if (login_check ( $mysqli ) == true) : ?>
 		<span class="error">You are not authorized to access this page.</span>
 		Please <a href="login.php">login</a>.
 	</p>
-	<?php 
-	echo '<p>user id'		.$_SESSION['user_id'].'</p>';
-	echo '<p>username'		.$_SESSION['username'].'</p>';
-	echo '<p>login string'	.$_SESSION['login_string'].'</p>';
-	?>
 <?php endif; ?>
 <?php ia_footer()?>
