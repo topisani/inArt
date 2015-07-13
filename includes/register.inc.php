@@ -38,8 +38,8 @@ if (isset($_POST['username'], $_POST['email'], $_POST['p'])) {
 			// A user with this email address already exists
 			$error_msg .= '<p class="error">A user with this email address already exists.</p>';
 			$stmt->close();
-		}
-		$stmt->close();
+		} else
+			$stmt->close();
 	} else {
 		$error_msg .= '<p class="error">Database error Line 39</p>';
 		$stmt->close();
