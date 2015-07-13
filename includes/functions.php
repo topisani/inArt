@@ -226,7 +226,9 @@ function get_user_info($login) {
 }
 /**
  * Add a failed login atempt for given user
- * @param $user_id
+ *
+ * @param
+ *        	$user_id
  */
 function add_brute($user_id) {
 	global $mysqli;
@@ -236,9 +238,9 @@ function add_brute($user_id) {
 }
 /**
  * Remove all failed login atempts
- * 
- * @param unknown $user_id
- * @return int amount of attempts removed    	
+ *
+ * @param unknown $user_id        	
+ * @return int amount of attempts removed
  */
 function reset_brute($user_id) {
 	global $mysqli;
@@ -256,26 +258,26 @@ function checkbrute($user_id) {
 	global $mysqli;
 	// Get timestamp of current time
 	$now = time ();
-
+	
 	// All login attempts are counted from the past 2 hours.
 	$valid_attempts = $now - (2 * 60 * 60);
-
+	
 	if ($stmt = $mysqli->prepare ( "SELECT time
 			FROM login_attempts
 			WHERE user_id = ?
 			AND time > '$valid_attempts'" )) {
-			$stmt->bind_param ( 'i', $user_id );
-
-			// Execute the prepared query.
-			$stmt->execute ();
-			$stmt->store_result ();
-
-			// If there have been more than [LOGIN_ATEMPTS] atempts
-			if (($stmt->num_rows > LOGIN_ATEMPTS) && ((LOGIN_ATEMPTS) != 0)) {
-				return true;
-			} else {
-				return false;
-			}
+		$stmt->bind_param ( 'i', $user_id );
+		
+		// Execute the prepared query.
+		$stmt->execute ();
+		$stmt->store_result ();
+		
+		// If there have been more than [LOGIN_ATEMPTS] atempts
+		if (($stmt->num_rows > LOGIN_ATEMPTS) && ((LOGIN_ATEMPTS) != 0)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
 // ####################################################
@@ -333,13 +335,14 @@ function login($login, $password) {
 			return true;
 		} else {
 			// Password is not correct
-			add_brute($user_id);
+			add_brute ( $user_id );
 			return '1';
 		}
 	}
 }
+
 /**
- * Check wether a user is locked in to the current session
+ * Check wether a user is logged in to the current session
  *
  * @return boolean
  */
@@ -389,6 +392,27 @@ function login_check() {
 		return false;
 	}
 }
+// ####################################################
+// AVATAR
+// ####################################################
+/**
+ * Path to the avatar of the given user.
+ * If no avatar exists, the default is returned.
+ *
+ * @param unknown $user_id
+ * @return string path to avatar.   	
+ */
+function user_avatar_path($user_id) {
+	$default = $_SERVER ['DOCUMENT_ROOT'] . '/content/images/default_user/avatar.png';
+	$avatar = USERDATA . '/' . $user_id . '/avatar.png';
+	if (! file_exists ( $avatar ))
+		$avatar = $default;
+	return $avatar;
+}
+
+// ####################################################
+// MISC
+// ####################################################
 function esc_url($url) {
 	if ('' == $url) {
 		return $url;
