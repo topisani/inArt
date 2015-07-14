@@ -1,5 +1,5 @@
 <?php
-require_once '../includes/db_connect.php';
+require_once '../includes/functions.php';
 $query = "
 	CREATE TABLE `".DATABASE."`.`members` (
         `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -14,6 +14,14 @@ $query = "
         `time` VARCHAR(30) NOT NULL
     ) ENGINE=InnoDB
 		
+	CREATE TABLE `".DATABASE."`.`uploads` (
+        `user_id` INT(11) NOT NULL,
+        `name` VARCHAR(50) NOT NULL,
+		`original_name` VARCHAR(30) NOT NULL,
+		`mime_type` VARCHAR(30) NOT NULL,
+		`upload_id` INT(11) NOT NULL AUTO_INCREMENT,
+		PRIMARY KEY (`user_id`, `upload_id`)
+    ) ENGINE=MyISAM;
 		
 	";
 

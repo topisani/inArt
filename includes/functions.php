@@ -399,15 +399,28 @@ function login_check() {
  * Path to the avatar of the given user.
  * If no avatar exists, the default is returned.
  *
- * @param unknown $user_id
- * @return string path to avatar.   	
+ * @param unknown $user_id        	
+ * @return string path to avatar.
  */
 function user_avatar_path($user_id) {
-	$default = $_SERVER ['DOCUMENT_ROOT'] . '/content/images/default_user/avatar.png';
+	$default = ROOT . '/content/images/default_user/avatar.png';
 	$avatar = USERDATA . '/' . $user_id . '/avatar.png';
 	if (! file_exists ( $avatar ))
 		$avatar = $default;
 	return $avatar;
+}
+
+// ####################################################
+// FILE HANDLING
+// ####################################################
+function ia_upload_file($desc) {
+	echo '
+		<form enctype="multipart/form-data" action="includes/file_upload.php" method="POST">
+			<input type="hidden" name="MAX_FILE_SIZE" value="' . MAX_FILE_SIZE . '" />
+			' . $desc . ' <input name="userfile" type="file" /><br />
+			<input type="submit" value="Upload File" />
+		</form>	
+			';
 }
 
 // ####################################################

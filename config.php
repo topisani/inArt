@@ -12,5 +12,7 @@ define("SECURE", FALSE);    // FOR DEVELOPMENT ONLY!!!!
 // Amount of login attempts before the account gets locked
 define("LOGIN_ATEMPTS", 5);
 
-define("USERDATA", $_SERVER['DOCUMENT_ROOT'].'/userdata');
+define('ROOT', $_SERVER['DOCUMENT_ROOT'].'/');
+define("USERDATA", ROOT.'/userdata/');
+define("MAX_FILE_SIZE", 10000000); //10MB
 ?>
