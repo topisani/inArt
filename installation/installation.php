@@ -22,6 +22,13 @@ $query = "
 		`upload_id` INT(11) NOT NULL AUTO_INCREMENT,
 		PRIMARY KEY (`user_id`, `upload_id`)
     ) ENGINE=MyISAM;
+			
+	CREATE TABLE `".DATABASE."`.`user_settings` (
+        `user_id` INT(11) NOT NULL,
+        `key` VARCHAR(50) NOT NULL,
+		`value` VARCHAR(400) NOT NULL,
+		PRIMARY KEY (`user_id`)
+    ) ENGINE=InnoDB;
 		
 	";
 
