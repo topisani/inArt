@@ -27,9 +27,8 @@ $query = "
         `user_id` INT(11) NOT NULL,
         `key` VARCHAR(50) NOT NULL,
 		`value` VARCHAR(400) NOT NULL,
-		PRIMARY KEY (`user_id`)
+		PRIMARY KEY (`user_id`, `key`)
     ) ENGINE=InnoDB;
-		
 	";
 
 $stmt = $mysqli->prepare($query);

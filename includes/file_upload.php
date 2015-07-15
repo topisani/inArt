@@ -8,7 +8,7 @@ $user_id = $_SESSION ['user_id'];
 $uploaddir = USERDATA . '/uploads/' . $user_id . '/';
 $original_name = basename ( $_FILES ['userfile'] ['name'] );
 $basename = pathinfo ( tempnam ( $uploaddir, "ul_" ) ) ['filename'];
-$uploadfile = $basename . '.' . pathinfo ( $original_name ) ['extension'];
+$uploadfile = $uploaddir . $basename . '.' . pathinfo ( $original_name ) ['extension'];
 
 if (move_uploaded_file ( $_FILES ['userfile'] ['tmp_name'], $uploadfile )) {
 	
@@ -19,11 +19,11 @@ if (move_uploaded_file ( $_FILES ['userfile'] ['tmp_name'], $uploadfile )) {
 	// TODO find a more unexploitable way to find the mimetype
 	$mime_type = $_FILES ['userfile'] ['type'];
 	if (strpos ( $mime_type, 'image' ) == 0) {
-		if (! $mime_type = getimagesize () ['mime'])
+		if (! $mime_type = getimagesize ( $uploadfile ) ['mime'])
 			die ( "That image ain't no image bro" );
 	}
 	
-	$stmt->bind_param ( 'isss', $user_id, $uploadfile, $original_name, $mime_type );
+	$stmt->bind_param ( 'isss', $user_id, basename ( $uploadfile ), $original_name, $mime_type );
 	$stmt->execute ();
 	if ($stmt->affected_rows != 1) {
 		unlink ( $uploadfile );
@@ -34,13 +34,18 @@ if (move_uploaded_file ( $_FILES ['userfile'] ['tmp_name'], $uploadfile )) {
 		unlink ( $uploadfile );
 		die ( "Database Error" );
 	}
-	$stmt->bind_param ( 'is', $user_id, $name );
+	$stmt->bind_param ( 'is', $user_id, basename ( $uploadfile ) );
 	$stmt->execute ();
 	$stmt->store_result ();
 	$stmt->bind_result ( $id );
 	$stmt->fetch ();
 	
-	echo "File is valid, and was successfully uploaded. You can view it <a href='view6.php?id=" . $id . "'>here</a>n";
+	echo "
+		<script>
+    		var user_id = " . json_encode ( $user_id ) . ";
+    		var upload_id = " . json_encode ( $upload_id ) . ";
+		</script>
+			";
 } else {
 	echo "File uploading failed";
 }

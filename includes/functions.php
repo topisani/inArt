@@ -393,6 +393,48 @@ function login_check() {
 	}
 }
 // ####################################################
+// USER SETTINGS
+// ####################################################
+/**
+ * Set a value in the user_settings table
+ * If key already exists the value is changed
+ * returns false on database error
+ *
+ * @param unknown $user_id        	
+ * @param unknown $key        	
+ * @param unknown $value        	
+ */
+function set_user_setting($user_id, $key, $value) {
+	if (! $stmt = $mysqli->prepare ( "
+			INSERT INTO user_settings SET user_id=?, key=?, value=?
+  			ON DUPLICATE KEY UPDATE value=?;
+			" )) {
+		return false;
+	}
+	$stmt->bind_param ( 'isss', $user_id, $key, $value, $value );
+	$stmt->execute ();
+}
+/**
+ * Get a value from the user_settings table
+ * @param int $user_id user ID
+ * @param string $key setting key
+ * @return unknown|null null on database error or unset key.
+ */
+function get_user_setting($user_id, $key) {
+	if (! $stmt = $mysqli->prepare ( "SELECT value FROM user_settings WHERE user_id=?, key=?;" )) {
+		return null;
+	}
+	$stmt->bind_param ( 'is', $user_id, $key );
+	$stmt->execute ();
+	$stmt->store_result ();
+	$stmt->bind_result ( $value );
+	$stmt->fetch ();
+	if ($stmt->num_rows != 1) {
+		return null;
+	}
+	return $value;
+}
+// ####################################################
 // AVATAR
 // ####################################################
 /**
@@ -409,18 +451,26 @@ function user_avatar_path($user_id) {
 		$avatar = $default;
 	return $avatar;
 }
-
+function set_avatar($user_id, $upload_id) {
+}
 // ####################################################
 // FILE HANDLING
 // ####################################################
-function ia_upload_file($desc) {
+function ia_upload($desc) {
+	$id = rand ();
 	echo '
-		<form enctype="multipart/form-data" action="includes/file_upload.php" method="POST">
+		<form enctype="multipart/form-data" action="includes/file_upload.php" method="POST" target="' . $id . '_ul">
 			<input type="hidden" name="MAX_FILE_SIZE" value="' . MAX_FILE_SIZE . '" />
 			' . $desc . ' <input name="userfile" type="file" /><br />
 			<input type="submit" value="Upload File" />
-		</form>	
+		</form>
+		<iframe id="' . $id . '_ul" class="hidden_upload" name="' . $id . '_ul" style="display:none" ></iframe>
+		<script type="text/javascript">
+			window.' . $id . '_ul.
 			';
+}
+function get_upload($user_id, $file_id) {
+	return "file_view.php?user_id=" . $user_id . "&upload_id=" . $upload_id;
 }
 
 // ####################################################
