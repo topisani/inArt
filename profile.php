@@ -4,7 +4,7 @@ ia_header ('Profile');
 
 $username = (isset( $_GET['user'] ))  ? $_GET['user'] : (login_check() ? $_SESSION['username'] : '');
 if( $username == '') error_page('no profile selected and not logged in');
-ia_upload_file('Upload avatar');
+ia_upload('Upload avatar');
 ?>
 
 
