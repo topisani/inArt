@@ -1,5 +1,5 @@
 <?php
-require_once 'functions.php';
+require_once '../functions.php';
 sec_session_start ();
 
 $user_id = $_GET ['user_id'];
