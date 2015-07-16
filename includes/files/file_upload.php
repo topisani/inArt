@@ -37,15 +37,8 @@ if (move_uploaded_file ( $_FILES ['userfile'] ['tmp_name'], $uploadfile )) {
 	$stmt->bind_param ( 'is', $user_id, basename ( $uploadfile ) );
 	$stmt->execute ();
 	$stmt->store_result ();
-	$stmt->bind_result ( $id );
+	$stmt->bind_result ( $upload_id );
 	$stmt->fetch ();
-	
-	echo "
-		<script>
-    		var user_id = " . json_encode ( $user_id ) . ";
-    		var upload_id = " . json_encode ( $upload_id ) . ";
-		</script>
-			";
 } else {
 	echo "File uploading failed";
 }
