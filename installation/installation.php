@@ -31,7 +31,7 @@ $query = "
     ) ENGINE=InnoDB;
 	";
 
-$stmt = $mysqli->prepare($query);
+$stmt = $db->mysqli->prepare($query);
 $stmt->execute();
 
 ?>

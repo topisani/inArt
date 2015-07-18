@@ -43,7 +43,6 @@ if ( isset( $_POST['username'], $_POST['email'], $_POST['p'] ) ) {
 	// We'll also have to account for the situation where the user doesn't have
 	// rights to do registration, by checking what type of user is attempting to
 	// perform the operation.
-	
 	if ( empty( $error_msg ) ) {
 		$random_salt = hash( 'sha512', uniqid( mt_rand( 1, mt_getrandmax() ), true ) );
 		$password = hash( 'sha512', $password . $random_salt );
@@ -52,10 +51,12 @@ if ( isset( $_POST['username'], $_POST['email'], $_POST['p'] ) ) {
 				'username' => $username, 
 				'email' => $email, 
 				'password' => $password, 
-				'salt' => $salt 
+				'salt' => $random_salt 
 		) ) ) {
 			header( 'Location: ../error.php?err=Registration failure: INSERT' );
 		}
 		header( 'Location: ./register_success.php' );
 	}
+	
+	echo $error_msg;
 }

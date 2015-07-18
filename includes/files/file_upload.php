@@ -9,9 +9,7 @@ $original_name = basename( $_FILES['userfile']['name'] );
 $basename = pathinfo( tempnam( $uploaddir, "ul_" ) )['filename'];
 $uploadfile = $uploaddir . $basename . '.' . pathinfo( $original_name )['extension'];
 $mime_type = $_FILES['userfile']['type'];
-if ( strpos( $mime_type, 'image' ) == 0 ) {
-	if ( !$mime_type = getimagesize( $uploadfile )['mime'] ) die( "That image ain't no image bro" );
-}
+
 
 if ( move_uploaded_file( $_FILES['userfile']['tmp_name'], $uploadfile ) ) {
 	$data = array( 
@@ -25,10 +23,10 @@ if ( move_uploaded_file( $_FILES['userfile']['tmp_name'], $uploadfile ) ) {
 		die( "Error saving data to the database. The file was not uploaded" );
 	}
 	$result = $db->select( 'uploads', 'upload_id', array( 
-			'user_id' => $user_id, 
+			'user_id = ?' => $user_id, 
 			'name = ?' => basename( $uploadfile ) 
 	) );
-	$result->bind_vars( $upload_id = 'upload_id' );
+	$upload_id = $result->get_first( 'upload_id' );
 } else {
 	echo "File uploading failed";
 }

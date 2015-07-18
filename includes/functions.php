@@ -169,9 +169,10 @@ function get_user_info( $login ) {
 	$table = 'members';
 	$columns = 'email, id, username, password, salt';
 	$type = login_type( $login );
-	$result = $db->select( $table, $columns, array( 
+	$condition = array( 
 			$type . ' = ?' => $login 
-	), 1 );
+	);
+	$result = $db->select( $table, $columns, $condition, 1 );
 	return ( $result->has_rows() ) ? $result->rows[0] : false;
 }
 
@@ -244,26 +245,19 @@ function checkbrute( $user_id ) {
  *         <li> 4: database error</li>
  */
 function login( $login, $password ) {
-	global $mysqli;
 	$info = get_user_info( $login );
 	if ( $info === null ) return '4';
 	if ( $info === false ) return '2';
-	$user_id = $info['user_id'];
+	$user_id = $info['id'];
 	$username = $info['username'];
 	$db_password = $info['password'];
 	$salt = $info['salt'];
-	// hash the password with the unique salt.
+
 	$password = hash( 'sha512', $password . $salt );
-	// If the user exists we check if the account is locked
-	// from too many login attempts
-	if ( checkbrute( $user_id, $mysqli ) == true ) {
-		// Account is locked
-		// TODO some way to unlock
+	if ( checkbrute( $user_id ) == true ) {
 		return '3';
 	} else {
-		if ( $db_password == $password ) {
-			// Password is correct!
-			// Get the user-agent string of the user.
+		if ( $db_password === $password && $db_password != null ) {
 			$user_browser = $_SERVER['HTTP_USER_AGENT'];
 			// XSS protection as we might print this value
 			$user_id = preg_replace( "/[^0-9]+/", "", $user_id );
@@ -401,7 +395,7 @@ window.' . $id . '_ul.
 }
 
 function get_upload( $user_id, $upload_id ) {
-	return "file_view.php?user_id=" . $user_id . "&upload_id=" . $upload_id;
+	return "includes/files/file_view.php?user_id=" . $user_id . "&upload_id=" . $upload_id;
 }
 // ####################################################
 // MISC
