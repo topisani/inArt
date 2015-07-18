@@ -2,10 +2,10 @@
 /**
  * These are the database login details
 */
-define('HOST','localhost');     // The host you want to connect to.
-define('USER','inart');    // The database username.
-define('PASSWORD','inart');    // The database password.
-define('DATABASE','inart');    // The database name.
+define('DB_HOST','localhost');     // The host you want to connect to.
+define('DB_USER','inart');    // The database username.
+define('DB_PASSWORD','inart');    // The database password.
+define('DB_DATABASE','inart');    // The database name.
 
 define("SECURE", FALSE);    // FOR DEVELOPMENT ONLY!!!!
 
@@ -13,6 +13,6 @@ define("SECURE", FALSE);    // FOR DEVELOPMENT ONLY!!!!
 define("LOGIN_ATEMPTS", 5);
 
 define('ROOT', $_SERVER['DOCUMENT_ROOT'].'/');
-define("USERDATA", ROOT.'/userdata/');
+define("USERDATA", '/var/www/userdata/');
 define("MAX_FILE_SIZE", 10000000); //10MB
 ?>

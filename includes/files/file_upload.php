@@ -1,44 +1,34 @@
 <?php
 require_once '../functions.php';
-sec_session_start ();
+sec_session_start();
 
-if (! login_check ())
-	echo "You have to be logged in to upload files";
-$user_id = $_SESSION ['user_id'];
-$uploaddir = USERDATA . '/uploads/' . $user_id . '/';
-$original_name = basename ( $_FILES ['userfile'] ['name'] );
-$basename = pathinfo ( tempnam ( $uploaddir, "ul_" ) ) ['filename'];
-$uploadfile = $uploaddir . $basename . '.' . pathinfo ( $original_name ) ['extension'];
+if ( !login_check() ) echo "You have to be logged in to upload files";
+$user_id = $_SESSION['user_id'];
+$uploaddir = USERDATA . $user_id . '/';
+$original_name = basename( $_FILES['userfile']['name'] );
+$basename = pathinfo( tempnam( $uploaddir, "ul_" ) )['filename'];
+$uploadfile = $uploaddir . $basename . '.' . pathinfo( $original_name )['extension'];
+$mime_type = $_FILES['userfile']['type'];
+if ( strpos( $mime_type, 'image' ) == 0 ) {
+	if ( !$mime_type = getimagesize( $uploadfile )['mime'] ) die( "That image ain't no image bro" );
+}
 
-if (move_uploaded_file ( $_FILES ['userfile'] ['tmp_name'], $uploadfile )) {
-	
-	if (! $stmt = $mysqli->prepare ( "INSERT INTO uploads SET user_id=?, name=?, original_name=?, mime_type=?" )) {
-		unlink ( $uploadfile );
-		die ( "Error connecting to the database" );
+if ( move_uploaded_file( $_FILES['userfile']['tmp_name'], $uploadfile ) ) {
+	$data = array( 
+			'user_id' => $user_id, 
+			'name' => basename( $uploadfile ), 
+			'original_name' => $original_name, 
+			'mime_type' => $mime_type 
+	);
+	if ( !$db->insert( 'uploads', $data ) ) {
+		unlink( $uploadfile );
+		die( "Error saving data to the database. The file was not uploaded" );
 	}
-	// TODO find a more unexploitable way to find the mimetype
-	$mime_type = $_FILES ['userfile'] ['type'];
-	if (strpos ( $mime_type, 'image' ) == 0) {
-		if (! $mime_type = getimagesize ( $uploadfile ) ['mime'])
-			die ( "That image ain't no image bro" );
-	}
-	
-	$stmt->bind_param ( 'isss', $user_id, basename ( $uploadfile ), $original_name, $mime_type );
-	$stmt->execute ();
-	if ($stmt->affected_rows != 1) {
-		unlink ( $uploadfile );
-		die ( "Error saving data to the database. The file was not uploaded" );
-	}
-	
-	if (! $stmt = $mysqli->prepare ( "SELECT upload_id FROM uploads WHERE user_id=? AND name=? LIMIT 1" )) {
-		unlink ( $uploadfile );
-		die ( "Database Error" );
-	}
-	$stmt->bind_param ( 'is', $user_id, basename ( $uploadfile ) );
-	$stmt->execute ();
-	$stmt->store_result ();
-	$stmt->bind_result ( $upload_id );
-	$stmt->fetch ();
+	$result = $db->select( 'uploads', 'upload_id', array( 
+			'user_id' => $user_id, 
+			'name = ?' => basename( $uploadfile ) 
+	) );
+	$result->bind_vars( $upload_id = 'upload_id' );
 } else {
 	echo "File uploading failed";
 }
