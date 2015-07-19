@@ -2,7 +2,7 @@
 require_once '../includes/functions.php';
 $query = "
 	CREATE TABLE `".DATABASE."`.`members` (
-        `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        `user_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
         `username` VARCHAR(30) NOT NULL,
         `email` VARCHAR(50) NOT NULL,
         `password` CHAR(128) NOT NULL,
@@ -25,7 +25,7 @@ $query = "
 			
 	CREATE TABLE `".DATABASE."`.`user_settings` (
         `user_id` INT(11) NOT NULL,
-        `key` VARCHAR(50) NOT NULL,
+        `setting` VARCHAR(50) NOT NULL,
 		`value` VARCHAR(400) NOT NULL,
 		PRIMARY KEY (`user_id`, `key`)
     ) ENGINE=InnoDB;

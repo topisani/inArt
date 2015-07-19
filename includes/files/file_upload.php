@@ -12,6 +12,7 @@ $mime_type = $_FILES['userfile']['type'];
 
 
 if ( move_uploaded_file( $_FILES['userfile']['tmp_name'], $uploadfile ) ) {
+	@chmod( $uploadfile, FILE_PERMISSIONS );
 	$data = array( 
 			'user_id' => $user_id, 
 			'name' => basename( $uploadfile ), 
