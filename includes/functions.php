@@ -35,7 +35,7 @@ function sec_session_start() {
  * @param string $message
  *        the error message to display
  */
-function error_page( string $message ) {
+function error_page( $message ) {
 	header( 'Location: ../error.php?err=' . $message );
 }
 
@@ -43,7 +43,7 @@ function error_page( string $message ) {
  * Echoes the content of the header file '/header.php'.
  * To be placed at the top of every page.
  * 
- * @param string $title
+ * @param $title
  *        the title of the current page
  */
 function ia_header( $title = '' ) {
@@ -63,7 +63,7 @@ function ia_footer() {
 /**
  * Set title of current page
  * 
- * @param string $title
+ * @param $title
  *        title
  */
 function set_page_title( $title ) {
@@ -106,16 +106,6 @@ function ia_scripts() {
 	foreach ( $scripts as $script ) {
 		echo '<script type="text/JavaScript" src="js/' . $script . '.js"></script>';
 	}
-}
-
-// ####################################################
-// USER TOOLS
-// ####################################################
-function user_exists( $username ) {
-	global $db;
-	return $db->select( 'members', 'id', array(
-			'username = ?' => $username
-	) )->has_rows();
 }
 
 // ####################################################

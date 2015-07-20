@@ -5,7 +5,9 @@
  * Displays all of the head element and everything up until the "site-content" div.
  *
  */
-include_once $_SERVER['DOCUMENT_ROOT'].'/includes/functions.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/includes/functions.php';
+require_once ROOT . 'classes/User.class.php';
+require_once ROOT . 'classes/Error.class.php';
 
 ?>
 <!DOCTYPE html>
@@ -13,11 +15,11 @@ include_once $_SERVER['DOCUMENT_ROOT'].'/includes/functions.php';
 <head>
 
 <title><?php echo get_page_title();?></title>
-	
+
 	<?php ia_styles()?>
-		
+
 	<?php ia_scripts()?>
-	
+
 </head>
 
 <body>
@@ -29,16 +31,16 @@ include_once $_SERVER['DOCUMENT_ROOT'].'/includes/functions.php';
 				<input type="submit" value="Login" onclick="loginformhash(this.form, this.form.password);" />
 		</form>
 
-		<?php
-			if (login_check() == true) {
-				echo '<p>Currently logged in as ' . htmlentities ( $_SESSION ['username'] ) . '.     ';
-	
-				echo '<a href="includes/logout.php">Log out</a>.</p>';
-			} else {
-			echo '<p>Currently logged out.     ';
-			echo "<a href='register.php'>Register</a></p>";
-		}
-		?>
-	
-	</div>
+<?php
+global $db;
+if ( Users::login_check( $db ) == true ) {
+	echo '<p>Currently logged in as ' . htmlentities ( $_SESSION ['username'] ) . '.     ';
+
+	echo '<a href="includes/logout.php">Log out</a>.</p>';
+} else {
+	echo '<p>Currently logged out.     ';
+	echo "<a href='register.php'>Register</a></p>";
+}
+?>
+</div>
 

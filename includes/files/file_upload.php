@@ -1,8 +1,9 @@
 <?php
 require_once '../functions.php';
+require_once ROOT . 'classes/User.class.php';
 sec_session_start();
 
-if ( !login_check() ) echo "You have to be logged in to upload files";
+if ( !Users::login_check( $db ) ) echo "You have to be logged in to upload files";
 $user_id = $_SESSION['user_id'];
 $uploaddir = USERDATA . $user_id . '/';
 $original_name = basename( $_FILES['userfile']['name'] );

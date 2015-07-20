@@ -1,5 +1,6 @@
 <?php
-include_once $_SERVER['DOCUMENT_ROOT'].'/includes/functions.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/includes/functions.php';
+
 ia_header ('Log in');
 
 if (isset ( $_GET ['error'] )) {
@@ -31,7 +32,7 @@ if (isset ( $_GET ['error'] )) {
 </form>
 
 <?php
-if (login_check()) {
+if ( Users::login_check( $db ) ) {
 	echo '<p>Currently logged in as ' . htmlentities ( $_SESSION ['username'] ) . '.</p>';
 	
 	echo '<p>Do you want to change user? <a href="includes/logout.php">Log out</a>.</p>';

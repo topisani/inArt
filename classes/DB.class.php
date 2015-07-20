@@ -30,8 +30,10 @@ class DB {
 		$this->where( $condition, $values, $str );
 		$this->limit( $limit, $str );
 		$this->order_by( $order_by, $str );
-		$str .= ";";
-		if ( !$stmt = $this->mysqli->prepare( $str ) ) die( "Database Error on select()" );
+		$stmt = $this->mysqli->prepare( $str );
+		if ( !$stmt ) echo( "Database Error on select()" );
+		trigger_error( $stmt->error );
+		trigger_error(  $this->mysqli->error );
 		$this->bind_values( $stmt, $values );
 		$stmt->execute();
 		return new DB_result( $stmt->get_result() );
@@ -58,7 +60,6 @@ class DB {
 			$str .= ' ON DUPLICATE KEY UPDATE';
 			$this->data( $update_data, $values, $str );
 		}
-		$str .= ";";
 		if ( !$stmt = $this->mysqli->prepare( $str ) ) die( "Database Error on insert()" );
 		$this->bind_values( $stmt, $values );
 		$stmt->execute();
@@ -81,17 +82,17 @@ class DB {
 	 *        Comma seperated list of columns to order by.
 	 * @return number of rows deleted.
 	 */
-	function delete( string $table, array $condition = null, int $limit = null, string $order_by = null ) {
-		$keys = rtrim( $keys, ',' );
+	function delete( $table, $condition = null, $limit = null, $order_by = null ) {
 		$str = '
-				DELETE FROM ' . $table . '
+				DELETE FROM ' . $table . ' 
 				';
 		$this->where( $condition, $values, $str );
 		$this->limit( $limit, $str );
 		$this->order_by( $order_by, $str );
-		$str .= ";";
-		
-		if ( !$stmt = $this->mysqli->prepare( $str ) ) trigger_error( "Database Error on Delete()" );
+		$stmt = $this->mysqli->prepare( $str );
+		echo $stmt->error;
+		echo $this->mysqli->error;
+		if ( !$stmt ) Error::stop( "Database Error on Delete()" );
 		$this->bind_values( $stmt, $values );
 		$stmt->execute();
 		return $stmt->affected_rows;

@@ -2,7 +2,7 @@
 include_once $_SERVER['DOCUMENT_ROOT'].'/includes/functions.php';
 ia_header ('Protected Page');
 
-if (login_check ( ) == true) : ?>
+if ( Users::login_check ( ) == true) : ?>
 
 	<p>Welcome <?php echo htmlentities($_SESSION['username']); ?>!</p>
 	<p>
