@@ -120,9 +120,7 @@ function ia_upload( $desc, $type ) {
         <input type="submit" value="Upload File" />
         </form>
         <iframe id="' . $id . '_ul" class="hidden_upload" name="' . $id . '_ul" style="display:none" ></iframe>
-        <script type="text/javascript">
-window.' . $id . '_ul.
-';
+	 ';
 }
 
 function get_upload( $user_id, $upload_id ) {
