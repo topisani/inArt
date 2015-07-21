@@ -16,6 +16,6 @@ define('ROOT', $_SERVER['DOCUMENT_ROOT'].'/');
 define("USERDATA", '/var/www/userdata/');
 define("MAX_FILE_SIZE", 10000000); //10MB
 
-define("DIRECTORY_PERMISSIONS", 770);
-define("FILE_PERMISSIONS", 660)
+define("DIRECTORY_PERMISSIONS", 0770);
+define("FILE_PERMISSIONS", 0660)
 ?>

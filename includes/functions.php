@@ -2,7 +2,8 @@
 /**
  * Contains funcitons
  */
-include_once ( $_SERVER['DOCUMENT_ROOT'] . '/classes/DB.class.php' );
+require_once ( __DIR__ . '/../classes/DB.class.php' );
+require_once ( __DIR__ . '/../classes/File.class.php' );
 $db = new DB();
 
 /**
@@ -114,8 +115,9 @@ function ia_scripts() {
 function ia_upload( $desc, $type ) {
 	$id = rand();
 	echo '
-        <form enctype="multipart/form-data" action="includes/files/' . $type . '_upload.php" method="POST" target="' . $id . '_ul">
-        <input type="hidden" name="MAX_FILE_SIZE" value="' . MAX_FILE_SIZE . '" />
+        <form enctype="multipart/form-data" action="includes/files/file_upload.php" method="POST" target="' . $id . '_ul">
+		<input type="hidden" name="type" value="' . $type . '" />
+		<input type="hidden" name="MAX_FILE_SIZE" value="' . MAX_FILE_SIZE . '" />
         ' . $desc . ' <input name="userfile" type="file" /><br />
         <input type="submit" value="Upload File" />
         </form>

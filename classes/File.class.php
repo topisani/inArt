@@ -1,26 +1,20 @@
 <?php
-require_once( __DIR__ . '../config.php' );
-require_once( __DIR__ . 'Error.class.php' );
+require_once( __DIR__ . '/../config.php' );
+require_once( __DIR__ . '/Error.class.php' );
 
 class Files {
-
-	$db;
-
-	public function __construct( DB $db ) {
-		$this->db = $db;
-	}
-
 	/**
 	 * Upload a file to the given users directory
 	 *
 	 * @param string $user_id 
 	 * @param string $form_text $_FILES [$form_text]
-	 * @return int $upload_id
+	 * @return int $upload_id or false
 	 */
-	private function upload( $user_id, $form_text  ) {
+	public static function upload( $user_id, $form_text, $db  ) {
 		$uploaddir = USERDATA . $user_id . '/';
 		$original_name = basename( $_FILES[$form_text]['name'] );
 		$basename = pathinfo( tempnam( $uploaddir, 'ul_' ) )['filename'];
+		trigger_error( 'OrgName' .  $_FILES['userfile']['name'] );
 		$uploadfile = $uploaddir . $basename . '.' . pathinfo( $original_name )['extension'];
 		$mime_type = $_FILES[$form_text]['type'];
 
@@ -94,7 +88,7 @@ class Files {
 		if ( !Files::is_path_dir( $path ) ) {
 			throw new InvalidArgumentException( 'Files::no_trail_slash( $path ): $path must be directory' );
 		}
-		return rtrim( $path '/' );
+		return rtrim( $path, '/' );
 	}
 	/**
 	 * Is the given string a valid path
@@ -124,7 +118,7 @@ class Files {
 	/**
 	 * Is the given path a directory, real or hypothetic
 	 *
-	 * @param string $path
+	 * @param string $p
 	 */
 	public static function is_path_dir( $path ) {
 		if ( !Files::is_path( $path ) ) {

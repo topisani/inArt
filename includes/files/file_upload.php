@@ -1,35 +1,18 @@
 <?php
-require_once '../functions.php';
-require_once ROOT . 'classes/User.class.php';
+require_once( __DIR__ . '/../functions.php' );
+require_once( __DIR__ . '/../../classes/User.class.php' );
 sec_session_start();
 
-if ( !Users::login_check( $db ) ) echo "You have to be logged in to upload files";
+if ( !Users::login_check( $db ) ) die ( "You have to be logged in to upload files" );
+$type = $_POST['type'];
 $user_id = $_SESSION['user_id'];
-$uploaddir = USERDATA . $user_id . '/';
-$original_name = basename( $_FILES['userfile']['name'] );
-$basename = pathinfo( tempnam( $uploaddir, "ul_" ) )['filename'];
-$uploadfile = $uploaddir . $basename . '.' . pathinfo( $original_name )['extension'];
-$mime_type = $_FILES['userfile']['type'];
-
-
-if ( move_uploaded_file( $_FILES['userfile']['tmp_name'], $uploadfile ) ) {
-	@chmod( $uploadfile, FILE_PERMISSIONS );
-	$data = array( 
-			'user_id' => $user_id, 
-			'name' => basename( $uploadfile ), 
-			'original_name' => $original_name, 
-			'mime_type' => $mime_type 
-	);
-	if ( !$db->insert( 'uploads', $data ) ) {
-		unlink( $uploadfile );
-		die( "Error saving data to the database. The file was not uploaded" );
-	}
-	$result = $db->select( 'uploads', 'upload_id', array( 
-			'user_id = ?' => $user_id, 
-			'name = ?' => basename( $uploadfile ) 
-	) );
-	$upload_id = $result->get_first( 'upload_id' );
-} else {
-	echo "File uploading failed";
+$upload_id = Files::upload( $user_id, 'userfile', $db );
+if ( $upload_id === false ) {
+	die ( "File uploading failed" );
 }
-?>
+switch ( $type ) {
+case 'avatar':
+	$user = new User( $user_id, $db );
+	$user->set_avatar( $upload_id );
+	break;
+}

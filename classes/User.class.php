@@ -161,7 +161,7 @@ class User {
 	 *        upload id of avatar image
 	 */
 	function set_avatar( $upload_id ) {
-		set_user_setting( $this->user_id, "avatar", $upload_id );
+		$this->set_user_setting( "avatar", $upload_id );
 	}
 
 	/**
