@@ -1,6 +1,6 @@
 <?php
 //TODO Look into CSRF protection
-include_once $_SERVER['DOCUMENT_ROOT'].'/includes/functions.php';
+require_once( __DIR__ . '/functions.php');
 sec_session_start();
 
 // Unset all session values

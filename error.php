@@ -1,5 +1,5 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'].'/includes/functions.php';
+require_once( __DIR__ . '/includes/functions.php' );
 $error = filter_input ( INPUT_GET, 'err', $filter = FILTER_SANITIZE_STRING );
 
 if (! $error) {

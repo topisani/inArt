@@ -1,7 +1,7 @@
 <?php
-require_once ( $_SERVER['DOCUMENT_ROOT'] . '/config.php' );
-require_once ( ROOT . 'classes/DB.class.php' );
-require_once ( ROOT . 'classes/Error.class.php' );
+require_once( __DIR__  . '/../config.php' );
+require_once( __DIR__ . '/DB.class.php' );
+require_once( __DIR__ . '/Error.class.php' );
 
 /**
  * Class: User

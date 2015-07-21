@@ -5,9 +5,9 @@
  * Displays all of the head element and everything up until the "site-content" div.
  *
  */
-require_once $_SERVER['DOCUMENT_ROOT'].'/includes/functions.php';
-require_once ROOT . 'classes/User.class.php';
-require_once ROOT . 'classes/Error.class.php';
+require_once( __DIR__ . '/includes/functions.php');
+require_once( __DIR__ . '/classes/User.class.php');
+require_once( __DIR__ . '/classes/Error.class.php');
 
 ?>
 <!DOCTYPE html>

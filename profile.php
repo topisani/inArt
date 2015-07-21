@@ -1,5 +1,5 @@
 <?php
-include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/functions.php';
+require_once( __DIR__  . '/includes/functions.php' );
 ia_header( 'Profile' );
 
 $username = ( isset( $_GET['user'] ) ) ? $_GET['user'] : ( Users::login_check( $db ) ? $_SESSION['username'] : '' );

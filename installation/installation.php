@@ -1,5 +1,5 @@
 <?php
-require_once '../includes/functions.php';
+require_once( __DIR__ . '../includes/functions.php' );
 $query = "
 	CREATE TABLE `".DATABASE."`.`members` (
         `user_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,

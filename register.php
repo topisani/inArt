@@ -1,6 +1,6 @@
 <?php
-include_once 'includes/register.inc.php';
-include_once 'includes/functions.php';
+require_once( __DIR__ . '/includes/register.inc.php' );
+require_once( __DIR__ . '/includes/functions.php' );
 set_page_title("Register");
 ia_header();
 ?>

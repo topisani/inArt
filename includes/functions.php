@@ -2,8 +2,8 @@
 /**
  * Contains funcitons
  */
-require_once ( __DIR__ . '/../classes/DB.class.php' );
-require_once ( __DIR__ . '/../classes/File.class.php' );
+require_once( __DIR__ . '/../classes/DB.class.php' );
+require_once( __DIR__ . '/../classes/File.class.php' );
 $db = new DB();
 
 /**

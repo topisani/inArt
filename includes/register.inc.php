@@ -1,6 +1,6 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/functions.php';
-require_once ROOT . 'classes/User.class.php';
+require_once( __DIR__ . '/functions.php' );
+require_once( __DIR__ . '/../classes/User.class.php' );
 
 if ( isset( $_POST['username'], $_POST['email'], $_POST['p'] ) ) {
 
