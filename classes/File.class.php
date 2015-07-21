@@ -3,6 +3,49 @@ require_once( __DIR__ . '../config.php' );
 require_once( __DIR__ . 'Error.class.php' );
 
 class Files {
+
+	$db;
+
+	public function __construct( DB $db ) {
+		$this->db = $db;
+	}
+
+	/**
+	 * Upload a file to the given users directory
+	 *
+	 * @param string $user_id 
+	 * @param string $form_text $_FILES [$form_text]
+	 * @return int $upload_id
+	 */
+	private function upload( $user_id, $form_text  ) {
+		$uploaddir = USERDATA . $user_id . '/';
+		$original_name = basename( $_FILES[$form_text]['name'] );
+		$basename = pathinfo( tempnam( $uploaddir, 'ul_' ) )['filename'];
+		$uploadfile = $uploaddir . $basename . '.' . pathinfo( $original_name )['extension'];
+		$mime_type = $_FILES[$form_text]['type'];
+
+		if ( move_uploaded_file( $_FILES[$form_text]['tmp_name'], $uploadfile ) ) {
+			@chmod( $uploadfile, FILE_PERMISSIONS );
+			$data = array( 
+				'user_id' => $user_id, 
+				'name' => basename( $uploadfile ), 
+				'original_name' => $original_name, 
+				'mime_type' => $mime_type 
+			);
+			if ( !$db->insert( 'uploads', $data ) ) {
+				unlink( $uploadfile );
+				die( "Error saving data to the database. The file was not uploaded" );
+			}
+			$result = $db->select( 'uploads', 'upload_id', array( 
+				'user_id = ?' => $user_id, 
+				'name = ?' => basename( $uploadfile ) 
+			) );
+			return $result->get_first( 'upload_id' );
+		}
+		return false;
+	}
+
+	
 	/**
 	 * Create a new directory, and give it the appropriate permissions.
 	 *
