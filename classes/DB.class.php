@@ -93,7 +93,23 @@ class DB {
 		$stmt->execute();
 		return $stmt->affected_rows;
 	}
-
+	
+	/**
+	 * Gets the highest current value of the given column
+	 *
+	 * @param mixed $table
+	 * @param mixed $column
+	 */
+	public function max( $table, $column ) {
+		$str = 'SELECT MAX(' . $column . ') AS max FROM ' . $table;
+		$stmt = $this->mysqli->prepare( $str );
+		if ( !$stmt ) Error::stop( "Database Error on next_autoinc()" );
+		$stmt->execute();
+		$stmt->store_result();
+		$stmt->bind_result( $max );
+		$stmt->fetch();
+		return $max;
+	}
 	/**
 	 * Returns string i, d, or s depending on the type of $param.
 	 * for use with mysqli::bind_result().
