@@ -68,6 +68,34 @@ class DB {
 	}
 
 	/**
+	 * Update row(s) in table.
+	 *
+	 * @param mixed $table Table.
+	 * @param mixed $data 
+	 * 		  Data to insert. $column => $value.
+	 * @param mixed $condition
+	 * 		  Array of conditions. 'column = ?' => 'value'. can be null for all rows
+	 * @param int $limit
+	 *        Max rows to update.
+	 * @param string $order_by
+	 *        Comma seperated list of columns to order by.
+	 * @return number of rows updated.
+	 */
+	function update( $table, $data, $condition, $limit = null, $order_by = null ) {
+		$str = '
+				UPDATE ' . $table . '
+				SET 
+				';
+		$this->data( $data, $values, $str );
+		$this->where( $condition, $values, $str );
+		$this->limit( $limit, $str );
+		$this->order_by( $order_by, $str );
+		if ( !$stmt = $this->mysqli->prepare( $str ) ) die( "Database Error on insert()" );
+		$this->bind_values( $stmt, $values );
+		$stmt->execute();
+		return $stmt->affected_rows;
+	}
+	/**
 	 * Delete rows from $table.
 	 * 
 	 * @param string $table
