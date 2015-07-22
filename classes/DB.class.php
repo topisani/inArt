@@ -32,8 +32,6 @@ class DB {
 		$this->order_by( $order_by, $str );
 		$stmt = $this->mysqli->prepare( $str );
 		if ( !$stmt ) echo( "Database Error on select()" );
-		trigger_error( $stmt->error );
-		trigger_error(  $this->mysqli->error );
 		$this->bind_values( $stmt, $values );
 		$stmt->execute();
 		return new DB_result( $stmt->get_result() );
@@ -90,8 +88,6 @@ class DB {
 		$this->limit( $limit, $str );
 		$this->order_by( $order_by, $str );
 		$stmt = $this->mysqli->prepare( $str );
-		echo $stmt->error;
-		echo $this->mysqli->error;
 		if ( !$stmt ) Error::stop( "Database Error on Delete()" );
 		$this->bind_values( $stmt, $values );
 		$stmt->execute();
