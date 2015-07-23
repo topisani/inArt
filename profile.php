@@ -2,9 +2,9 @@
 require_once( __DIR__  . '/includes/functions.php' );
 ia_header( 'Profile' );
 
-$username = ( isset( $_GET['user'] ) ) ? $_GET['user'] : ( Users::login_check( $db ) ? $_SESSION['username'] : '' );
-if ( $username == '' ) {
-	Error::stop( 'no profile selected and not logged in' );
+$username = ( isset( $_GET['user'] ) && $_GET['user'] !== '' ) ? $_GET['user'] : ( Users::login_check( $db ) ? $_SESSION['username'] : null );
+if ( $username === null ) {
+	Error::stop( 'Not logged in' );
 } else if ( !Users::exists( $username, $db ) ) {
 	Error::stop( 'Given user does not exist' );
 } else {

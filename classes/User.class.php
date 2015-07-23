@@ -170,7 +170,7 @@ class User {
 	 * @param mixed $upload_id
 	 */
 	function get_upload( $upload_id ) {
-		return "includes/files/file_view.php?user_id=" . $this->user_id . "&upload_id=" . $upload_id;
+		return "/includes/files/file_view.php?user_id=" . $this->user_id . "&upload_id=" . $upload_id;
 	}
 
 

@@ -126,7 +126,7 @@ function ia_upload( $desc, $type ) {
 }
 
 function get_upload( $user_id, $upload_id ) {
-	return "includes/files/file_view.php?user_id=" . $user_id . "&upload_id=" . $upload_id;
+	return "/includes/files/file_view.php?user_id=" . $user_id . "&upload_id=" . $upload_id;
 }
 // ####################################################
 // MISC
