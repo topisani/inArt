@@ -115,7 +115,7 @@ function ia_scripts() {
 function ia_upload( $desc, $type ) {
 	$id = rand();
 	echo '
-        <form enctype="multipart/form-data" action="includes/files/file_upload.php" method="POST" target="' . $id . '_ul">
+        <form enctype="multipart/form-data" action="/includes/files/file_upload.php" method="POST" target="' . $id . '_ul">
 		<input type="hidden" name="type" value="' . $type . '" />
 		<input type="hidden" name="MAX_FILE_SIZE" value="' . MAX_FILE_SIZE . '" />
         ' . $desc . ' <input name="userfile" type="file" /><br />
