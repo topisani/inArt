@@ -1,9 +1,17 @@
 <?php
+
+define( 'ROOT_DIR', rtrim( __DIR__, 'includes'  ) );
+define( 'TEMPLATE_DIR', ROOT_DIR . 'template/' );
+define( 'INCLUDES_DIR', ROOT_DIR . 'includes/' );
+define( 'CLASSES_DIR', ROOT_DIR . 'classes/' );
+
 /**
  * Contains funcitons
  */
-require_once( __DIR__ . '/../classes/DB.class.php' );
-require_once( __DIR__ . '/../classes/File.class.php' );
+require_once( CLASSES_DIR . 'DB.class.php' );
+require_once( CLASSES_DIR . 'File.class.php' );
+require_once( CLASSES_DIR . 'User.class.php' );
+
 $db = new DB();
 
 /**
@@ -37,7 +45,7 @@ function sec_session_start() {
  *        the error message to display
  */
 function error_page( $message ) {
-	header( 'Location: ../error.php?err=' . $message );
+	header( 'Location: /template/error.php?err=' . $message );
 }
 
 /**
@@ -50,7 +58,7 @@ function error_page( $message ) {
 function ia_header( $title = '' ) {
 	sec_session_start();
 	set_page_title( $title );
-	return include ( 'header.php' );
+	return include ( TEMPLATE_DIR . 'header.php' );
 }
 
 /**
@@ -58,7 +66,7 @@ function ia_header( $title = '' ) {
  * To be placed at the bottom of every page.
  */
 function ia_footer() {
-	return include ( 'footer.php' );
+	return include ( TEMPLATE_DIR . 'footer.php' );
 }
 
 /**
@@ -91,7 +99,7 @@ function ia_styles() {
 			'main' 
 	];
 	foreach ( $styles as $style ) {
-		echo '<link rel="stylesheet" href="css/' . $style . '.css" />';
+		echo '<link rel="stylesheet" href="/css/' . $style . '.css" />';
 	}
 }
 
@@ -105,7 +113,7 @@ function ia_scripts() {
 			'sha512' 
 	];
 	foreach ( $scripts as $script ) {
-		echo '<script type="text/JavaScript" src="js/' . $script . '.js"></script>';
+		echo '<script type="text/JavaScript" src="/js/' . $script . '.js"></script>';
 	}
 }
 

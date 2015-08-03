@@ -1,11 +1,24 @@
 <?php
-require_once( __DIR__ . '/includes/functions.php' );
-ia_header ('Home');
-?>
+require_once( 'includes/functions.php' );
+$rewrite_rules = [
+	'file-view'                => "/media/(?'id'\d+)",
+	'register'                 => "/register",
+	'login'                    => "/login",
+	'user/artwork'             => "/(?'user'[\w\-]+)/artwork/(?:(?'id'\d+)|(?'name'[\w\-]+))",
+	'user/profile'             => "(?:/(?'user'[\w\-]+))",
+	'home'                     => "/"
+];
 
-<p> Sample page
+$uri = rtrim( dirname( $_SERVER["SCRIPT_NAME"] ), '/' );
+$uri = '/' . trim( str_replace( $uri, '', $_SERVER['REQUEST_URI'] ), '/' );
+$uri = urldecode( $uri );
 
-<?php
+foreach ( $rewrite_rules as $action => $rule ) {
+    if ( preg_match( '~^'.$rule.'$~', $uri, $params ) ) {
+        include( TEMPLATE_DIR . $action . '.php' );
+        exit();
+    }
+}
 
-ia_footer();
-?>
+// nothing is found so handle the 404 error
+include( TEMPLATE_DIR . '404.php' );?>

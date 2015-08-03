@@ -11,10 +11,10 @@ if (isset($_POST['email'], $_POST['p'])) {
 	
 	if ($login === true) {
 		// Login success
-		header('Location: ../profile.php');
+		header( 'Location: /' );
 	} else {
 		// Login failed
-		header('Location: ../login.php?error='.$login);
+		header( 'Location: /login?error=' . $login );
 	}
 } else {
 	// The correct POST variables were not sent to this page.
