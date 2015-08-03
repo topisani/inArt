@@ -127,9 +127,11 @@ class DB {
 	 *
 	 * @param mixed $table
 	 * @param mixed $column
+	 * @param array $condition optional
 	 */
-	public function max( $table, $column ) {
+	public function max( $table, $column, $condition = null ) {
 		$str = 'SELECT MAX(' . $column . ') AS max FROM ' . $table;
+		$this->where( $condition, $values, $str );
 		$stmt = $this->mysqli->prepare( $str );
 		if ( !$stmt ) Error::stop( "Database Error on next_autoinc()" );
 		$stmt->execute();
