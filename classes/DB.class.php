@@ -21,8 +21,10 @@ class DB {
 	 *        [optional] Limits the number of results. Leave empty for no limit.
 	 * @param string $order_by
 	 *        [optional] Comma seperated list of columns to order by.
+	 * @param string $append
+	 * 		  [optional] Will be appended to the end of the query.
 	 */
-	function select( $table, $columns, $condition = null, $limit = null, $order_by = null ) {
+	function select( $table, $columns, $condition = null, $limit = null, $order_by = null, $append = '' ) {
 		$str = "
 				SELECT " . $columns . " 
 				FROM " . $table . "
@@ -30,6 +32,7 @@ class DB {
 		$this->where( $condition, $values, $str );
 		$this->limit( $limit, $str );
 		$this->order_by( $order_by, $str );
+		$str .= ' ' . $append;
 		$stmt = $this->mysqli->prepare( $str );
 		if ( !$stmt ) echo( "Database Error on select()" );
 		$this->bind_values( $stmt, $values );
