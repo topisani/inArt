@@ -15,9 +15,22 @@ ia_header( $username );
 ?>
 
 <h1><?php echo $username?></h1>
-
+<h2>Artworks</h2>
 <?php
-	echo ( "<p>Set avatar</p>" );
-	ia_upload( 'Upload avatar', "avatar" );
+foreach ( $user->get_artworks() as $post ):
+?>
+	<div class="post-list-item">
+		<a href="<?php echo $post->get_link() ?>" ><?php echo $post->name ?></a>
+	</div>
+<?php endforeach; ?>
+<h2>Posts</h2>
+<?php
+foreach ( $user->get_posts() as $post ):
+?>
+	<div class="post-list-item">
+		<a href="<?php echo $post->get_link() ?>" ><?php echo $post->name ?></a>
+	</div>
+<?php 
+endforeach;
 }
 ia_footer();

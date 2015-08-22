@@ -1,27 +1,39 @@
-<?
+<?php
 require_once( __DIR__ . '/DB.class.php' );
 require_once( __DIR__ . '/User.class.php' );
 
+use \Enums\DB\Posts as Table;
 class Artwork {
 
 	private $db;
 	private $posts;
 
-	protected $user;
+	protected $user_id;
 	protected $id;
 	protected $name;
 	protected $text;
 	protected $media;
-	protected $type;
+	protected $date;
+	protected $options;
 
-	public function __construct( User $user, $artwork_id, DB $db = new DB() ) {
+	private $columns = [
+		'user_id' => 'user_id',
+		'id' => 'artwork_id',
+		'name' => 'post_name',
+		'text' => 'post_text',
+		'media' => 'post_media_ids',
+		'date' => 'post_date',
+		'options' => 'post_options'
+	];
+
+	public function __construct( $user_id, $artwork_id, DB $db ) {
 		if ( $db->select( 'artworks', 'user_id', [ 
-				'user_id' => $user->user_id,
-				'artwork_id' => $artwork_id,
-				'post_id' => 0,
+				'user_id = ?' => $user_id,
+				'artwork_id = ?' => $artwork_id,
+				'post_id = ?' => 0,
 			] )->has_rows() ) {
 			$this->db = $db;
-			$this->user = $user;
+			$this->user_id = $user_id;
 			$this->id = $artwork_id;
 			$this->read_db();
 		} else {
@@ -32,25 +44,29 @@ class Artwork {
 
 	public function read_db() {
 		$result = $this->db->select( 'artworks', '*', [ 
-				'user_id' => $this->user->user_id,
-				'artwork_id' => $this->artwork_id,
-				'post_id' => 0,
+				'user_id = ?' => $this->user_id,
+				'artwork_id = ?' => $this->id,
+				'post_id = ?' => 0,
 			] );
 		$this->name = $result->get_first( 'post_name' );
 		$this->text = $result->get_first( 'post_text' );
-		$this->media = explode( ',', $result->get_first( 'post_media' ) );
+		$this->media = explode( ',', $result->get_first( 'post_media_ids' ) );
 		$this->type = $result->get_first( 'post_type' );
 		$result = $this->db->select( 'artworks', 'post_id', [
-				'user_id' => $this->user->user_id,
-				'artwork_id' => $this->artwork_id,
+				'user_id = ?' => $this->user->user_id,
+				'artwork_id = ?' => $this->id,
+				'post_id <> ?' => 0
 			] );
-		$posts = array_values( $result->rows );
+		$this->posts = [];
+		foreach ( $result->rows as $v ) {
+			$this->posts[] = $v['post_id'];
+		}
 	}
 
 	public function __set( $name, $value ) {
 		if ( property_exists( $this, $name ) ) {
 			$this->{$name} = $value;
-			$data = [ $name => $value ]
+			$data = [ $name => $value ];
 			$this->db->update( 'artworks', $data, [ 
 				'user_id' => $this->user->user_id,
 				'artwork_id' => $this->artwork_id,
@@ -59,7 +75,13 @@ class Artwork {
 		}
 	}
 
-	public static function new( $user, DB $db = new DB() ) {
+	public function __GET( $name ) {
+		if ( property_exists( $this, $name ) ) {
+			return $this->{$name};
+		}
+	}
+
+	public static function create( $user, DB $db ) {
 		$id = $db->max( 'artworks', 'artwork_id', [ 'user_id = ?' => $user->user_id ] )  + 1;
 		$data = [
 			'user_id' => $user->user_id,
@@ -72,49 +94,44 @@ class Artwork {
 	
 	public function get_posts() {
 		$return = [];
-		foreach ( $posts as $post ) {
+		foreach ( $this->posts as $post ) {
 			$return[] = new Post( $this->user, $this->id, $post, $this->db );
 		}
 		return $return;
+	}
+
+	public function get_link() {
+		return '/' . $this->user->username . '/artwork/' . $this->id;
 	}
 	
 }
 
 class Post {
-	private $db;
-
-	protected $user;
-	protected $artwork_id;
-	protected $id;
-	protected $name;
-	protected $text;
-	protected $media;
-	protected $role;
-	protected $type;
-
-	public function __construct( User $user, $artwork_id, $post_id, DB $db = new DB() ) {
-		if ( $db->select( 'artworks', 'user_id', [ 
-				'user_id' => $user->user_id,
-				'artwork_id' => $artwork_id,
-				'post_id' => $post_id,
+	public function __construct( $user_id, $artwork_id, $post_id, DB $db ) {
+		if ( $db->select( Table::TABLE, Table::ARTWORK, [ 
+				Table::USER . ' = ?' => $user->user_id,
+				Table::ARTWORK . ' = ?' => $artwork_id,
+				Table::POST . ' = ?' => $post_id,
 			] )->has_rows() ) {
 			$this->db = $db;
 			$this->user = $user;
 			$this->artwork_id = $artwork_id;
+			$this->id = $post_id;
+			$this->read_db();
 		} else {
-			throw Exception( 'Post does not exist. Run \Artwork\Post::new() to create it' );
+			throw Exception( 'Post does not exist. Run Post::create() to create it' );
 		}
 	}
 
 	public function read_db() {
 		$result = $this->db->select( 'artworks', '*', [ 
-				'user_id' => $this->user->user_id,
-				'artwork_id' => $this->artwork_id,
-				'post_id' => $this->post_id,
+				'user_id = ?' => $this->user->user_id,
+				'artwork_id = ?' => $this->artwork_id,
+				'post_id = ?' => $this->id,
 			] );
 		$this->name = $result->get_first( 'post_name' );
 		$this->text = $result->get_first( 'post_text' );
-		$this->media = explode( ',', $result->get_first( 'post_media' ) );
+		$this->media = explode( ',', $result->get_first( 'post_media_ids' ) );
 		$this->role = $result->get_first( 'post_role' );
 		$this->type = $result->get_first( 'post_type' );
 	}
@@ -122,7 +139,7 @@ class Post {
 	public function __set( $name, $value ) {
 		if ( property_exists( $this, $name ) ) {
 			$this->{$name} = $value;
-			$data = [ $name => $value ]
+			$data = [ $name => $value ];
 			$this->db->update( 'artworks', $data, [ 
 				'user_id' => $this->user->user_id,
 				'artwork_id' => $this->artwork_id,
@@ -131,11 +148,30 @@ class Post {
 		}
 	}
 
-	public static function new( $user, $artwork_id, DB $db = new DB() ) {
-		$this->db = $db;
-		$this->user = $user;
-		$this->artwork_id = $artwork_id;
-		$this->id = $db->max( 'artworks', 'post_id' ) + 1;
+	public function __GET( $name ) {
+		if ( property_exists( $this, $name ) ) {
+			return $this->{$name};
+		}
+	}
+
+	public static function create( $user, $artwork_id, DB $db ) {
+		$id = $db->max( 'artworks', 'post_id', [ 
+			'user_id = ?' => $user->user_id,
+			'artwork_id = ?' => $artwork_id,
+		] )  + 1;
+		$data = [
+			'user_id' => $user->user_id,
+			'artwork_id' => $artwork_id,
+			'post_id' => $id
+		];
+		$db->insert( 'artworks', $data );
+		return new Post( $user, $artwork_id, $id, $db ); 
+	}
+	
+
+	
+	public function get_link() {
+		return '/' . $this->user->username . '/artwork/' . $this->artwork_id . '/post/' . $this->id;
 	}
 }
 

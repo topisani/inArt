@@ -37,8 +37,8 @@ $query = "
 		`post_name` TINYTEXT,
 		`post_text` TEXT,
 		`post_media_ids` VARCHAR(50),
-		`post_role` TINYINT,
-		`post_type` TINYINT,
+		`post_date` DATETIME,
+		`post_options` MEDIUMTEXT,
 	   	unique KEY (`user_id`, `artwork_id`, `post_id`),
     	CONSTRAINT fk_uid_users 
     	FOREIGN KEY (user_id) 

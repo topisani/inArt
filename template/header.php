@@ -37,7 +37,7 @@ if ( Users::login_check( $db ) == true ) {
 	echo '<a href="/includes/logout.php">Log out</a>.</p>';
 } else {
 	echo '<p>Currently logged out.';
-	echo "<a href='register.php'>Register</a></p>";
+	echo "<a href='/register'>Register</a></p>";
 }
 ?>
 </div>

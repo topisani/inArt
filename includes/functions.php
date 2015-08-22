@@ -99,7 +99,7 @@ function ia_styles() {
 			'main' 
 	];
 	foreach ( $styles as $style ) {
-		echo '<link rel="stylesheet" href="/css/' . $style . '.css" />';
+		echo '<link rel="stylesheet" href="/template/css/' . $style . '.css" />';
 	}
 }
 

@@ -37,7 +37,7 @@ ia_header( 'Register' );
             Confirm password: <input type="password" 
                                      name="confirmpwd" 
                                      id="confirmpwd" /><br>
-            <input type="button" 
+            <input type="submit" 
                    value="Register" 
                    onclick="return registerformhash(
                        			   this.form,

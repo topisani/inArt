@@ -4,8 +4,9 @@ $rewrite_rules = [
 	'file-view'                => "/media/(?'id'\d+)",
 	'register'                 => "/register",
 	'login'                    => "/login",
-	'user/artwork'             => "/(?'user'[\w\-]+)/artwork/(?:(?'id'\d+)|(?'name'[\w\-]+))",
-	'user/profile'             => "(?:/(?'user'[\w\-]+))",
+	'user/post-single'         => "/(?'user'[\w\-]+)/artwork/(?'artwork_id'\d+)/post/(?'id'\d+)",
+	'user/artwork-single'      => "/(?'user'[\w\-]+)/artwork/(?'id'\d+)",
+	'user/profile'             => "/(?'user'[\w\-]+)",
 	'home'                     => "/"
 ];
 

@@ -1,5 +1,6 @@
 <?php
-require_once( __DIR__  . '/../config.php' );
+require_once( ROOT_DIR . 'config.php' );
+require_once( __DIR__ . '/Artwork.class.php' );
 require_once( __DIR__ . '/DB.class.php' );
 require_once( __DIR__ . '/Error.class.php' );
 
@@ -13,14 +14,13 @@ class User {
 	private $db;
 
 	public $user_id;
-
 	public $username;
-
 	public $email;
-
 	public $password;
-
 	public $salt;
+
+	public $artworks;
+	public $posts;
 
 	function __construct( $user_id, DB $db ) {
 		$table = 'users';
@@ -36,10 +36,30 @@ class User {
 				$this->{$k} = $v;
 			}
 		} else {
-			Error::stop( "User does not exist" );
+			throw Exception( 'User does not exist' );
 		}
+		$this->read_db();
 	}
 
+	function read_db () {
+		$result = $this->db->select( 'artworks', 'artwork_id', [
+				'user_id = ?' => $this->user_id,
+				'artwork_id <> ?' => 0
+			], null, null, 'GROUP BY user_id' );
+		$this->artworks = [];
+		foreach ( $result->rows as $v ) {
+			$this->artworks[] = $v['artwork_id'];
+		}
+		$result = $this->db->select( 'artworks', 'post_id', [
+				'user_id = ?' => $this->user_id,
+				'artwork_id = ?' => 0,
+				'post_id <> ?' => 0
+			] );
+		$this->posts = [];
+		foreach ( $result->rows as $v ) {
+			$this->posts[] = $v['post_id'];
+		}
+	}
 	/**
 	 * Log this user in
 	 *
@@ -171,6 +191,27 @@ class User {
 	 */
 	function get_upload( $upload_id ) {
 		return "/includes/files/file_view.php?user_id=" . $this->user_id . "&upload_id=" . $upload_id;
+	}
+
+	// ####################################################
+	// ARTWORKS & POSTS
+	// ####################################################
+	
+	function get_artworks() {
+		$result = [];
+		foreach ( $this->artworks as $v ) {
+			$result[] = new Artwork( $this, $v, $this->db );
+		}
+		return $result;
+	}
+
+	function get_posts() {
+		$return = [];
+		foreach ( $this->posts as $post ) {
+			$return[] = new Post( $this, 0, $post, $this->db );
+		}
+		return $return;
+	
 	}
 
 
