@@ -7,6 +7,7 @@ $rewrite_rules = [
 	'user/post-single'         => "/(?'user'[\w\-]+)/artwork/(?'artwork_id'\d+)/post/(?'id'\d+)",
 	'user/artwork-single'      => "/(?'user'[\w\-]+)/artwork/(?'id'\d+)",
 	'user/profile'             => "/(?'user'[\w\-]+)",
+	'edit/index'               => "/edit/(?'action'[\w\-]+)",
 	'home'                     => "/"
 ];
 

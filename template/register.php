@@ -1,6 +1,4 @@
 <?php
-require_once( INCLUDES_DIR . 'register.inc.php' );
-require_once( INCLUDES_DIR . 'functions.php' );
 ia_header( 'Register' );
 ?>
         <!-- Registration form to be output if the POST variables are not
@@ -24,7 +22,7 @@ ia_header( 'Register' );
             </li>
             <li>Your password and confirmation must match exactly</li>
         </ul>
-        <form action="<?php echo esc_url($_SERVER['PHP_SELF']); ?>" 
+		<form action="<?php echo \Enums\Files\Forms::REGISTER_URL ?>" 
                 method="post" 
                 name="registration_form">
             Username: <input type='text' 
@@ -47,5 +45,5 @@ ia_header( 'Register' );
                                    this.form.confirmpwd
                                    );" /> 
         </form>
-        <p>Return to the <a href="login.php">login page</a>.</p>
+		<p>Return to the <a href="<?php echo ROOT_URL ?>login.php">login page</a>.</p>
 <?php ia_footer()?>

@@ -1,5 +1,5 @@
 <?php
-require_once( __DIR__ . '../includes/functions.php' );
+require_once( __DIR__ . '/../includes/functions.php' );
 $query = "
 	CREATE TABLE `".DATABASE."`.`users` (
         `user_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -12,7 +12,7 @@ $query = "
 	CREATE TABLE `".DATABASE."`.`login_attempts` (
         `user_id` INT(11) NOT NULL,
         `time` VARCHAR(30) NOT NULL
-    ) ENGINE=InnoDB
+    ) ENGINE=InnoDB;
 		
 	CREATE TABLE `".DATABASE."`.`uploads` (
         `user_id` INT(11) NOT NULL,
@@ -27,7 +27,7 @@ $query = "
         `user_id` INT(11) NOT NULL,
         `setting` VARCHAR(50) NOT NULL,
 		`value` TEXT NOT NULL,
-		PRIMARY KEY (`user_id`, `key`)
+		PRIMARY KEY (`user_id`, `setting`)
     ) ENGINE=InnoDB;
 	
 	CREATE TABLE `" . DATABASE . "`.`artworks` (

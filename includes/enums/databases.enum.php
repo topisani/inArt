@@ -1,7 +1,7 @@
 <?php
 namespace Enums\DB;
 
-use \MyCLabs\Enum\Enum;
+use \MyCLabs\Enum\Enum as Enum;
 
 class Posts extends Enum {
 	const TABLE = 'posts';

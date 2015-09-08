@@ -1,18 +1,52 @@
 <?php
 
+/*
+ * Define directories an URLs
+ */
 define( 'ROOT_DIR', rtrim( __DIR__, 'includes'  ) );
 define( 'TEMPLATE_DIR', ROOT_DIR . 'template/' );
 define( 'INCLUDES_DIR', ROOT_DIR . 'includes/' );
 define( 'CLASSES_DIR', ROOT_DIR . 'classes/' );
+define( 'FORMS_DIR', INCLUDES_DIR . 'forms/' );
+define( 'ENUMS_DIR', INCLUDES_DIR . 'enums/' );
+define( 'LIBS_DIR', ROOT_DIR . 'libs/' );
 
-/**
- * Contains funcitons
+define( 'ROOT_URL', '/' );
+define( 'TEMPLATE_URL', ROOT_URL . 'templates/' );
+define( 'INCLUDES_URL', ROOT_URL . 'includes/' );
+define( 'CLASSES_URL', ROOT_URL . 'classes/' );
+define( 'FORMS_URL', INCLUDES_URL . 'forms/' );
+define( 'ENUMS_URL', INCLUDES_URL . 'enums/' );
+
+/*
+ * Include Liberarys
+ */
+require_once( LIBS_DIR . 'php-enum.php' );
+
+/*
+ * Include enums
+ */
+require_once( ENUMS_DIR . 'databases.enum.php' );
+require_once( ENUMS_DIR . 'files.enum.php' );
+
+/*
+ * Include classes
  */
 require_once( CLASSES_DIR . 'DB.class.php' );
 require_once( CLASSES_DIR . 'File.class.php' );
 require_once( CLASSES_DIR . 'User.class.php' );
+require_once( CLASSES_DIR . 'Artwork.class.php' );
+require_once( CLASSES_DIR . 'Error.class.php' );
 
+/*
+ * Initiate global variables
+ */
 $db = new DB();
+
+
+/* 
+ *  F U N C T I O N S:
+ */
 
 /**
  * Starts a secure session.
@@ -59,6 +93,29 @@ function ia_header( $title = '' ) {
 	sec_session_start();
 	set_page_title( $title );
 	return include ( TEMPLATE_DIR . 'header.php' );
+}
+
+function redirect($url)
+{
+    $baseUri="";;
+
+    if(headers_sent())
+    {
+        $string = '<script type="text/javascript">';
+        $string .= 'window.location = "' . $baseUri.$url . '"';
+        $string .= '</script>';
+
+        echo $string;
+    }
+    else
+    {
+    if (isset($_SERVER['HTTP_REFERER']) AND ($url == $_SERVER['HTTP_REFERER']))
+        header('Location: '.$_SERVER['HTTP_REFERER']);
+    else
+        header('Location: '.$baseUri.$url);
+
+    }
+    exit;
 }
 
 /**
@@ -123,7 +180,7 @@ function ia_scripts() {
 function ia_upload( $desc, $type ) {
 	$id = rand();
 	echo '
-        <form enctype="multipart/form-data" action="/includes/files/file_upload.php" method="POST" target="' . $id . '_ul">
+		<form enctype="multipart/form-data" action="<?php echo \Enums\Files\Userdata::UPLOAD_URL ?>" method="POST" target="' . $id . '_ul">
 		<input type="hidden" name="type" value="' . $type . '" />
 		<input type="hidden" name="MAX_FILE_SIZE" value="' . MAX_FILE_SIZE . '" />
         ' . $desc . ' <input name="userfile" type="file" /><br />
@@ -134,7 +191,7 @@ function ia_upload( $desc, $type ) {
 }
 
 function get_upload( $user_id, $upload_id ) {
-	return "/includes/files/file_view.php?user_id=" . $user_id . "&upload_id=" . $upload_id;
+	return "<?php echo \Enums\Files\Userdata::VIEW_URL ?>?user_id=" . $user_id . "&upload_id=" . $upload_id;
 }
 // ####################################################
 // MISC

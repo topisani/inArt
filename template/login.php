@@ -35,10 +35,10 @@ if (isset ( $_GET ['error'] )) {
 if ( Users::login_check( $db ) ) {
 	echo '<p>Currently logged in as ' . htmlentities ( $_SESSION ['username'] ) . '.</p>';
 	
-	echo '<p>Do you want to change user? <a href="/includes/logout.php">Log out</a>.</p>';
+	echo '<p>Do you want to change user? <a href="<?php echo \Enums\Files\Forms::LOGOUT ?>">Log out</a>.</p>';
 } else {
 	echo '<p>Currently logged out.</p>';
-	echo "<p>If you don't have a login, please <a href='/#/register'>register</a></p>";
+	echo "<p>If you don't have a login, please <a href='/register'>register</a></p>";
 }
 
 ia_footer();

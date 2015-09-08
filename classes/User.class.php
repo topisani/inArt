@@ -47,6 +47,7 @@ class User {
 				'artwork_id <> ?' => 0
 			], null, null, 'GROUP BY user_id' );
 		$this->artworks = [];
+		if ( !$result->has_rows() ) return;
 		foreach ( $result->rows as $v ) {
 			$this->artworks[] = $v['artwork_id'];
 		}
@@ -56,6 +57,7 @@ class User {
 				'post_id <> ?' => 0
 			] );
 		$this->posts = [];
+		if ( !$result->has_rows() ) return;
 		foreach ( $result->rows as $v ) {
 			$this->posts[] = $v['post_id'];
 		}
@@ -207,8 +209,10 @@ class User {
 
 	function get_posts() {
 		$return = [];
-		foreach ( $this->posts as $post ) {
-			$return[] = new Post( $this, 0, $post, $this->db );
+		if ( $this->posts != [] ) {
+			foreach ( $this->posts as $post ) {
+				$return[] = new Post( $this, 0, $post, $this->db );
+			}
 		}
 		return $return;
 	
@@ -321,6 +325,7 @@ class Users {
 	 * @param DB $db Database
 	 */
 	static function create( $username, $email, $password, DB $db ) {
+		$error_msg = "";
 		$email = filter_var( $email, FILTER_VALIDATE_EMAIL );
 		if ( !filter_var( $email, FILTER_VALIDATE_EMAIL ) ) {
 			$error_msg .= '<p class="error">The email address you entered is not valid</p>';

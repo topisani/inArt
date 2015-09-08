@@ -82,13 +82,13 @@ class Artwork {
 	}
 
 	public static function create( $user, DB $db ) {
-		$id = $db->max( 'artworks', 'artwork_id', [ 'user_id = ?' => $user->user_id ] )  + 1;
+		$id = $db->max( Table::TABLE, Table::ARTWORK, [ ' = ?' => $user->user_id ] )  + 1;
 		$data = [
-			'user_id' => $user->user_id,
-			'artwork_id' => $id,
-			'post_id' => 0
+			Table::USER => $user->user_id,
+			Table::ARTWORK => $id,
+			Table::POST => 0
 		];
-		$db->insert( 'artworks', $data );
+		$db->insert( Table::TABLE, $data );
 		return new Artwork( $user, $id, $db ); 
 	}
 	
@@ -124,26 +124,26 @@ class Post {
 	}
 
 	public function read_db() {
-		$result = $this->db->select( 'artworks', '*', [ 
-				'user_id = ?' => $this->user->user_id,
-				'artwork_id = ?' => $this->artwork_id,
-				'post_id = ?' => $this->id,
+		$result = $this->db->select( Table::TABLE, '*', [ 
+				Table::USER    . ' = ?' => $this->user->user_id,
+				Table::ARTWORK . ' = ?' => $this->artwork_id,
+				Table::POST    . ' = ?' => $this->id,
 			] );
-		$this->name = $result->get_first( 'post_name' );
-		$this->text = $result->get_first( 'post_text' );
-		$this->media = explode( ',', $result->get_first( 'post_media_ids' ) );
-		$this->role = $result->get_first( 'post_role' );
-		$this->type = $result->get_first( 'post_type' );
+		$this->name = $result->get_first( Table::NAME );
+		$this->text = $result->get_first( Table::TEXT );
+		$this->media = explode( ',', $result->get_first( Table::MEDIA ) );
+		$this->date = $result->get_first( Table::DATE );
+		$this->options = $result->get_first( Table::OPTIONS );
 	}
 
 	public function __set( $name, $value ) {
 		if ( property_exists( $this, $name ) ) {
 			$this->{$name} = $value;
 			$data = [ $name => $value ];
-			$this->db->update( 'artworks', $data, [ 
-				'user_id' => $this->user->user_id,
-				'artwork_id' => $this->artwork_id,
-				'post_id' => $this->id,
+			$this->db->update( Table::TABLE, $data, [ 
+				Table::USER => $this->user->user_id,
+				Table::ARTWORK => $this->artwork_id,
+				Table::POST => $this->id,
 			] );	
 		}
 	}
@@ -155,16 +155,16 @@ class Post {
 	}
 
 	public static function create( $user, $artwork_id, DB $db ) {
-		$id = $db->max( 'artworks', 'post_id', [ 
-			'user_id = ?' => $user->user_id,
-			'artwork_id = ?' => $artwork_id,
+		$id = $db->max( Table::TABLE, Table::POST, [ 
+			Table::USER . ' = ?' => $user->user_id,
+			Table::ARTWORK . ' = ?' => $artwork_id,
 		] )  + 1;
 		$data = [
-			'user_id' => $user->user_id,
-			'artwork_id' => $artwork_id,
-			'post_id' => $id
+			Table::USER => $user->user_id,
+			Table::ARTWORK => $artwork_id,
+			Table::POST => $id
 		];
-		$db->insert( 'artworks', $data );
+		$db->insert( Table::TABLE, $data );
 		return new Post( $user, $artwork_id, $id, $db ); 
 	}
 	

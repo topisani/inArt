@@ -13,7 +13,7 @@ define("SECURE", FALSE);    // FOR DEVELOPMENT ONLY!!!!
 define("LOGIN_ATEMPTS", 5);
 
 define('ROOT', $_SERVER['DOCUMENT_ROOT'].'/');
-define("USERDATA", '/var/www/userdata/');
+define("USERDATA", ROOT . '../userdata/');
 define("MAX_FILE_SIZE", 10000000); //10MB
 
 define("DIRECTORY_PERMISSIONS", 0770);
