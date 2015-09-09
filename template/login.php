@@ -1,6 +1,4 @@
 <?php
-require_once( INCLUDES_DIR . 'functions.php' );
-
 ia_header ('Log in');
 
 if (isset ( $_GET ['error'] )) {

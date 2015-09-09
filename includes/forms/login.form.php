@@ -1,6 +1,4 @@
 <?php
-require_once( __DIR__ . '/functions.php' );
-require_once( __DIR__ . '/../classes/User.class.php' );
 sec_session_start(); // Our custom secure way of starting a PHP session.
 
 if (isset($_POST['email'], $_POST['p'])) {

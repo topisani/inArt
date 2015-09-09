@@ -1,5 +1,4 @@
 <?php
-require_once( INCLUDES_DIR . 'functions.php' );
 $error = filter_var( $params['err'], FILTER_SANITIZE_STRING );
 
 if (! $error) {

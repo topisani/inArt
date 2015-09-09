@@ -1,6 +1,5 @@
 <?php
 //TODO Look into CSRF protection
-require_once( __DIR__ . '/functions.php');
 sec_session_start();
 
 // Unset all session values

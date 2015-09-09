@@ -5,10 +5,6 @@
  * Displays all of the head element and everything up until the "site-content" div.
  *
  */
-require_once( INCLUDES_DIR . 'functions.php');
-require_once( CLASSES_DIR . 'User.class.php');
-require_once( CLASSES_DIR . 'Error.class.php');
-
 ?>
 <!DOCTYPE html>
 <html>

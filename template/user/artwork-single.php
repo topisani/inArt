@@ -1,6 +1,4 @@
 <?php
-require_once( CLASSES_DIR . 'Artwork.class.php' );
-
 $user_id = $params['user'];
 $artwork = new Artwork( User::get( $user_id, $db ), $params['id'], $db );
 $posts = $artwork->get_posts();

@@ -1,6 +1,4 @@
 <?php
-require_once( __DIR__ . '/../functions.php');
-
 $user_id = $_GET['user_id'];
 $uploaddir = USERDATA . $user_id . '/';
 $upload_id = $_GET['upload_id'];

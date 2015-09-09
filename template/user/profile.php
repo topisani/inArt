@@ -1,6 +1,4 @@
 <?php
-require_once( INCLUDES_DIR  . 'functions.php' );
-require_once( CLASSES_DIR   . 'User.class.php' );
 $username = ( isset( $params['user'] ) && $params['user'] !== '' ) ? $params['user'] : ( Users::login_check( $db ) ? $_SESSION['username'] : null );
 if ( $username === null ) {
 	Error::stop( 'Not logged in' );

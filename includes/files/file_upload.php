@@ -1,6 +1,4 @@
 <?php
-require_once( __DIR__ . '/../functions.php' );
-require_once( __DIR__ . '/../../classes/User.class.php' );
 sec_session_start();
 
 if ( !Users::login_check( $db ) ) die ( "You have to be logged in to upload files" );
