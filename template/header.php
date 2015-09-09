@@ -22,7 +22,7 @@ require_once( CLASSES_DIR . 'Error.class.php');
 
 <body>
 	<div id="header">
-		<form action="/includes/process_login.php" method="post"
+	<form action="<?php echo \Enums\Files\Forms::LOGIN_URL ?>" method="post"
 			name="login_form">
 			Username / Email: <input type="text" name="email" />
 			 Password: <input type="password" name="password" id="password" /> 
@@ -34,7 +34,7 @@ global $db;
 if ( Users::login_check( $db ) == true ) {
 	echo '<p>Currently logged in as ' . htmlentities ( $_SESSION ['username'] ) . '.     ';
 
-	echo '<a href="/includes/logout.php">Log out</a>.</p>';
+	echo '<a href="<?php echo \Enums\Files\Forms::LOGOUT_URL ?>">Log out</a>.</p>';
 } else {
 	echo '<p>Currently logged out.';
 	echo "<a href='/register'>Register</a></p>";
