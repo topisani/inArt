@@ -15,6 +15,13 @@ $uri = rtrim( dirname( $_SERVER["SCRIPT_NAME"] ), '/' );
 $uri = '/' . trim( str_replace( $uri, '', $_SERVER['REQUEST_URI'] ), '/' );
 $uri = urldecode( $uri );
 
+$path = $_SERVER["DOCUMENT_ROOT"] . $_SERVER["REQUEST_URI"];
+
+if( file_exists ( $path )  && $path != $_SERVER["SCRIPT_FILENAME"]  ) {
+   include( $path );
+   exit();
+}
+
 foreach ( $rewrite_rules as $action => $rule ) {
     if ( preg_match( '~^'.$rule.'$~', $uri, $params ) ) {
         include( TEMPLATE_DIR . $action . '.php' );
